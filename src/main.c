@@ -1,142 +1,27 @@
 #include <simple2d.h>
 
-bool is_sound = true;
-int sound = 1;
-int music = 2;
-S2D_Sound *snd1;
-S2D_Sound *snd2;
-S2D_Music *mus1;
-S2D_Music *mus2;
-S2D_Window *window;
-
-
-void print_help() {
-  puts("");
-  puts(" |-------------------------------|");
-  puts(" | AUDIO TESTS KEYBOARD COMMANDS |");
-  puts(" |-------------------------------|");
-  puts(" | Q -> Switch between           |");
-  puts(" |      `Sound` and `Music`      |");
-  puts(" |                               |");
-  puts(" | Sound:                        |");
-  puts(" |   P -> S2D_PlaySound          |");
-  puts(" |                               |");
-  puts(" | Music:                        |");
-  puts(" |   P -> S2D_PlayMusic          |");
-  puts(" |   A -> S2D_PauseMusic         |");
-  puts(" |   S -> S2D_StopMusic          |");
-  puts(" |   R -> S2D_ResumeMusic        |");
-  puts(" |   F -> S2D_FadeOutMusic       |");
-  puts(" |                               |");
-  puts(" | Switching Samples:            |");
-  puts(" |   1 -> main.wav               |");
-  puts(" |   2 -> music.ogg              |");
-  puts(" |                               |");
-  puts(" | H -> Print this help message  |");
-  puts(" | Esc -> Exit                   |");
-  puts(" |-------------------------------|");
-  puts("");
+void render() {
+ S2D_Sprite *spr = S2D_CreateSprite("assets/sprite_sheet.png");
+ spr->x = 150;
+ spr->y = 275;
+ spr->width  = 100;
+ spr->height = 100;
+ int x = 150;
+ int y = 250;
+ int width = 100;
+ int height = 100;
+ S2D_ClipSprite(spr, x, y, width, height);
+ S2D_DrawSprite(spr);
+ S2D_FreeSprite(spr);
+ 
 }
-
-void on_key(S2D_Event e) {
-  if (e.type != S2D_KEY_DOWN) return;
-
-  if (strcmp(e.key, "Escape") == 0) {
-    S2D_Close(window);
-  }
-
-  switch (*e.key) {
-    case 'H':
-      print_help();
-      break;
-    case 'Q':
-      is_sound = is_sound ? false: true;
-      if (is_sound) {
-        puts("Switching to Sound...");
-      } else {
-        puts("Switching to Music...");
-      }
-      break;
-    case 'P':
-      if (is_sound) {
-        puts("S2D_PlaySound...");
-        if (sound == 1) {
-          S2D_PlaySound(snd1);
-        } else {
-          S2D_PlaySound(snd2);
-        }
-      } else {
-        puts("S2D_PlayMusic...");
-        if (music == 1) {
-          S2D_PlayMusic(mus1, true);
-        } else {
-          S2D_PlayMusic(mus2, true);
-        }
-      }
-      break;
-    case 'A':
-      puts("S2D_PauseMusic...");
-      S2D_PauseMusic();
-      break;
-    case 'R':
-      puts("S2D_ResumeMusic...");
-      S2D_ResumeMusic();
-      break;
-    case 'S':
-      puts("S2D_StopMusic...");
-      S2D_StopMusic();
-      break;
-    case 'F':
-      puts("S2D_FadeOutMusic...");
-      S2D_FadeOutMusic(2000);
-      break;
-    case '1':
-      puts("Switching to main.wav...");
-      if (is_sound) {
-        sound = 1;
-      } else {
-        music = 1;
-      }
-      break;
-    case '2':
-      puts("Switching to music.ogg...");
-      if (is_sound) {
-        sound = 2;
-      } else {
-        music = 2;
-      }
-      break;
-  }
-}
-
 
 int main() {
 
-  S2D_Diagnostics(true);
-
-  window = S2D_CreateWindow(
-    "Simple 2D — Audio", 200, 150, NULL, NULL, 0
+  S2D_Window *window = S2D_CreateWindow(
+    "forest adventure", 1280, 720, NULL, render, 0
   );
-
-  if (!window) return 1;
-
-  window->on_key = on_key;
-
-  snd1 = S2D_CreateSound("assets/main.wav");
-  snd2 = S2D_CreateSound("assets/main.ogg");
-
-  mus1 = S2D_CreateMusic("assets/main.wav");
-  mus2 = S2D_CreateMusic("assets/music.ogg");
-
-  print_help();
-
+  window->icon = "assets/s2d_icon.png";
   S2D_Show(window);
-
-  S2D_FreeSound(snd1);
-  S2D_FreeSound(snd2);
-  S2D_FreeMusic(mus1);
-  S2D_FreeMusic(mus2);
-  S2D_FreeWindow(window);
-
   return 0;
 }
